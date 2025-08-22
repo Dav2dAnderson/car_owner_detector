@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views import IndexTemplateView
+from .views import search_user
 
 
 urlpatterns = [
-    path('', IndexTemplateView.as_view(), name='main')
+    path('search', search_user, name='search_user')
 ]
+
+

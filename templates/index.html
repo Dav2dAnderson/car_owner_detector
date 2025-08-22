@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AutoPing.uz - Mashina Egasi bilan Bog'lanish</title>
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Bootstrap CSS (faqat stil uchun) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Font Awesome (ikonlar uchun) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
   <!-- Custom CSS -->
-  <link rel="stylesheet", href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css"/>
 </head>
 <body>
 
@@ -17,7 +20,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <div class="container">
     <a class="navbar-brand fw-bold" href="#"><i class="fas fa-car"></i> AutoPing.uz</a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="navbar-toggler" type="button">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -25,8 +28,8 @@
         <li class="nav-item"><a class="nav-link" href="#">Asosiy</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Xususiyatlar</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Yuklab olish</a></li>
-        <li class="nav-item"><a class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">Kirish</a></li>
-        <li class="nav-item"><a class="btn btn-outline-primary btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#registerModal">Hisob ochish</a></li>
+        <!-- Modal JS yo'q, tugma oddiy link holatida -->
+        <li class="nav-item"><a class="btn btn-primary btn-sm ms-3" href="#">Kirish</a></li>
       </ul>
     </div>
   </div>
@@ -39,25 +42,40 @@
     <p class="lead mb-5">Noto'g'ri parkovka, yo'lni to‘sib qo‘yish yoki favqulodda holatlarda mashina egasiga xabar yuboring</p>
     <div class="search-box mx-auto" style="max-width:600px;">
       <h2 class="mb-4">Mashina raqamini kiriting</h2>
-      <div class="input-group mb-3">
-        <input type="text" id="carNumber" class="form-control" placeholder="Masalan: 30 A 123 AA">
-        <button class="btn btn-primary" onclick="searchCar()">Kiritish</button>
-      </div>
+      <form method="get" action="{% url 'search_user' %}">
+        <div class="input-group mb-3">
+          <input 
+            type="text" 
+            name="car_number" 
+            id="carNumber" 
+            class="form-control" 
+            placeholder="Masalan: 30 A 123 AA" 
+            required
+          />
+          <button class="btn btn-primary" type="submit">Xabar yuborish</button>
+        </div>
+      </form>
       <p class="text-muted">Misol: 01 A 123 AA, 10 B 456 BA, 30 C 789 CC</p>
-      <div id="carOwnerInfo" class="car-owner-info">
+
+      <!-- JS yo‘qligi sababli blok default yashirincha qoladi (CSS bilan) -->
+      {% if user %}
+      <div id="carOwnerInfo" class="car-owner-info" style="display:block;">
         <div class="d-flex align-items-center mb-3">
-          <div class="user-avatar">AS</div>
+          <div class="user-avatar">{{ user.first_name }}</div>
           <div>
-            <h5 id="ownerName" style="color: black;">Azizbek Samijonov</h5>
-            <p class="mb-1" style="color: black;">Mashina: Chevrolet Malibu</p>
-            <p class="mb-0" style="color: black;">Yili: 2022</p>
+            <h5 id="ownerName" style="color: black;">{{ user.first_name}} {{ user.last_name }}</h5>
+            <p class="mb-1" style="color: black;">Mashina: {{ user.car }}</p>
+            <p class="mb-0" style="color: black;">Rangi: {{ user.car_color }}</p>
           </div>
         </div>
         <div class="d-flex gap-2">
-          <button class="btn btn-outline-primary w-50"><i class="fas fa-comment"></i> Xabar yuborish</button>
-          <button class="btn btn-outline-success w-50"><i class="fas fa-phone"></i> Qo‘ng‘iroq qilish</button>
+          <a class="btn btn-outline-primary w-50" href="tel:{{ user.phone_number }}"><i class="fas fa-phone"></i> Qo‘ng‘iroq qilish</a>
+          <a class="btn btn-outline-success w-50" href="sms:{{ user.phone_number }}"><i class="fas fa-comment"></i> Xabar yuborish</a>
         </div>
       </div>
+      {% elif user is not none %}
+      <p class="text-danger">❌ Bunday mashina raqami topilmadi.</p>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -70,9 +88,27 @@
       <p class="text-muted">Bizning platformamiz orqali siz mashina egasiga tez va xavfsiz bog'lanishingiz mumkin</p>
     </div>
     <div class="row g-4">
-      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h4>Maxfiylik</h4><p>Shaxsiy ma'lumotlar ko‘rsatilmaydi, faqat xabar yuborish mumkin</p></div></div>
-      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="fas fa-bolt"></i></div><h4>Tezkor</h4><p>Xabar push, SMS yoki Telegram orqali yuboriladi</p></div></div>
-      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="fas fa-qrcode"></i></div><h4>QR kod</h4><p>QR kod orqali tezda egasiga xabar yuboring</p></div></div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h4>Maxfiylik</h4>
+          <p>Shaxsiy ma'lumotlar ko‘rsatilmaydi, faqat xabar yuborish mumkin</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+          <h4>Tezkor</h4>
+          <p>Xabar push, SMS yoki Telegram orqali yuboriladi</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+          <h4>QR kod</h4>
+          <p>QR kod orqali tezda egasiga xabar yuboring</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -83,9 +119,9 @@
     <h2 class="mb-3 fw-bold">Ilovamizni yuklab oling</h2>
     <p class="text-muted mb-5">AutoPing ilovasini yuklab oling va mashina egasi bilan tezda bog‘laning</p>
     <div class="d-flex justify-content-center flex-wrap gap-3">
-      <div class="badge"><i class="fab fa-apple"></i> App Store</div>
-      <div class="badge"><i class="fab fa-google-play"></i> Google Play</div>
-      <div class="badge"><i class="fab fa-telegram"></i> Telegram Bot</div>
+      <div class="badge app-badge"><i class="fab fa-apple"></i> App Store</div>
+      <div class="badge app-badge"><i class="fab fa-google-play"></i> Google Play</div>
+      <div class="badge app-badge"><i class="fab fa-telegram"></i> Telegram Bot</div>
     </div>
   </div>
 </section>
@@ -93,7 +129,7 @@
 <!-- Footer -->
 <footer class="py-4">
   <div class="container text-center">
-    <p>&copy; <span id="year"></span> AutoPing.uz - Barcha huquqlar himoyalangan</p>
+    <p>&copy; 2025 AutoPing.uz - Barcha huquqlar himoyalangan</p>
     <div>
       <a href="#"><i class="fab fa-telegram fa-lg"></i></a>
       <a href="#"><i class="fab fa-instagram fa-lg"></i></a>
@@ -102,56 +138,5 @@
   </div>
 </footer>
 
-<!-- Modal: Login -->
-<div class="modal fade" id="loginModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5>Kirish</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <input type="email" class="form-control mb-3" placeholder="Email" required>
-          <input type="password" class="form-control mb-3" placeholder="Parol" required>
-          <button type="submit" class="btn btn-primary w-100">Kirish</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: Registration -->
-<div class="modal fade" id="registerModal", tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>Hisob ochish</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input type="text" class="form-control mb-3" placeholder="Ism" name="first_name" required>
-                    <input type="text" class="form-control mb-3" placeholder="Familiya" name="last_name" required>
-                    <input type="text" class="form-control mb-3" placeholder="Telefon raqam" name="phone_number" required>
-                    <input type="text" class="form-control mb-3" placeholder="Avtomobil" name="car" required>
-                    <input type="text" class="form-control mb-3" placeholder="Avtomobil raqami" name="car_number" required>
-                    <button type="submit" class="btn btn-outline-primary w-100">Hisob ochish</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-  function searchCar() {
-    const number = document.getElementById("carNumber").value.trim();
-    if(!number) { alert("Iltimos, mashina raqamini kiriting!"); return; }
-    document.getElementById("carOwnerInfo").style.display = "block";
-  }
-</script>
 </body>
 </html>

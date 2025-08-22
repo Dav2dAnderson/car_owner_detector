@@ -11,9 +11,9 @@ class CustomUser(AbstractUser):
     car_color = models.CharField(max_length=30)
 
     class Meta:
-        verbose_name = "Foydalanuvchi"
-        verbose_name_plural = "Foydalanuvchilar"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
         ordering = ["username"]
 
     def __str__(self):
-        return f"{self.username} ({self.car_number}) "
+        return f"{self.username} ({self.car_number})"
