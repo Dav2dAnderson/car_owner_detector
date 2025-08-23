@@ -29,7 +29,12 @@
         <li class="nav-item"><a class="nav-link" href="#">Xususiyatlar</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Yuklab olish</a></li>
         <!-- Modal JS yo'q, tugma oddiy link holatida -->
-        <li class="nav-item"><a class="btn btn-primary btn-sm ms-3" href="#">Kirish</a></li>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item"><a class="btn btn-primary btn-sm ms-3" href="#">{{ request.user.username }}</a></li>
+        {% else %}
+        <li class="nav-item"><a class="btn btn-primary btn-sm ms-3" href="{% url 'login_user' %}">Kirish</a></li>
+        <li class="nav-item"><a class="btn btn-outline-primary btn-sm ms-3" href="{% url 'register_user' %}">Hisob ochish</a></li>
+        {% endif %}
       </ul>
     </div>
   </div>
