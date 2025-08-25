@@ -1,10 +1,25 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.detail import DetailView
+from django.shortcuts import get_object_or_404
+
 from django.contrib import messages
 
 from .models import CustomUser
 # Create your views here.
+
+class ProfileView(LoginRequiredMixin, DetailView):
+    model = CustomUser
+    template_name = 'profile.html'
+    context_object_name = 'user'
+    login_url = 'login_user'
+
+
+    def get_object(self):
+        return get_object_or_404(CustomUser, pk=self.request.user.pk)
 
 
 def search_user(request):
@@ -74,4 +89,10 @@ class CustomLoginView(View):
             return render(request, 'login.html')
         
     
+class CustomLogoutView(View):
+    def get(self, request):
+        logout(request)
+        messages.success(request, "Hisobdan chiqdingiz!")
+        return redirect('login_user')
     
+
