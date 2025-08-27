@@ -25,9 +25,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Asosiy</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Xususiyatlar</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Yuklab olish</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
         <!-- Modal JS yo'q, tugma oddiy link holatida -->
         {% if request.user.is_authenticated %}
         <li class="nav-item">
@@ -123,19 +121,6 @@
           <p>QR kod orqali tezda egasiga xabar yuboring</p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- Download -->
-<section class="download-section py-5 text-center">
-  <div class="container">
-    <h2 class="mb-3 fw-bold">Ilovamizni yuklab oling</h2>
-    <p class="text-muted mb-5">AutoPing ilovasini yuklab oling va mashina egasi bilan tezda bog‘laning</p>
-    <div class="d-flex justify-content-center flex-wrap gap-3">
-      <div class="badge app-badge"><i class="fab fa-apple"></i> App Store</div>
-      <div class="badge app-badge"><i class="fab fa-google-play"></i> Google Play</div>
-      <div class="badge app-badge"><i class="fab fa-telegram"></i> Telegram Bot</div>
     </div>
   </div>
 </section>
